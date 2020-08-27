@@ -5,40 +5,53 @@
 
 <div class="panel-heading"><h1><?php echo $noticia->titulo ?></h1></div>
     <?php echo $noticia->descricao?>
-    
+
     <div class='data'>
         <span class="label label-primary"><?php echo $noticia->data ?></span>
         <span class="label label-primary"><?php echo "Por:".$noticia->nome_usuario ?></span>
     </div>
-  
+
     </div>
 
     <div class="panel panel-primary">
 
         <div class="panel-heading">
-            <h5 class="panel-title">Comentarios</h5>
+            <h5 class="panel-title">Comentários</h5>
         </div>
+        <?php
+            include HOME_DIR."classes/Comentario.php";
+            $comentario = new Comentario();
+            $comentarios = $comentario->lComen($noticia->id);
+        ?>
         <div class="coments">
-            <p class="nome-user">Nome Usuario</p>
-            <p class="coment-user">consectetur. Vestibulum in lorem quis libero mollis cursus ut vel metus.</p>
+            <?php
+                if($comentarios){
+                    foreach($comentarios as $comentario){
+            ?>
+            <p class="nome-user"><?php echo($comentario->nome) ?></p>
+            <p class="coment-user"><?php echo($comentario->comentario) ?></p>
+                        <?php
+                        if(isset($_SESSION['usuario'])) {
+                            echo("<a href='" . HOME_URI . "comentario/excluir/" . $noticia->id . "/" . $comentario->id . "'"." ><span class='glyphicon glyphicon-trash'></span></a>");
+                        }
+                    }
+                }
+            ?>
         </div>
 
-         <form class="form">  
+         <form class="form" action="<?php echo HOME_URI;?>comentario/salvar/<?php echo $noticia->id ?>"method="POST">
             <div class="form-group">
-            <input type="text" class="form-control" placeholder="Adicione um comentário">
+            <input name="comentario" type="text" class="form-control" placeholder="Adicione um comentário">
             <div class="input-form">
-            <button type="submit" class="btn btn-primary btn-sm">Enviar</button>
+            <input name="enviar" type="submit" class="btn btn-primary btn-sm">
             </div>
             </div>      
             
         </form>
 
-    </div>
+    </div>  
 
-    
-
-</div>
-    
+</div>   
 
 </main>
 </html>
